@@ -62,9 +62,6 @@ committed in `build/`, so the theme works straight away without running npm.
    drush config:set system.theme default hts -y
    ```
 
-> **Bootstrap Icons** are not committed. To use them, run the
-> [build](#development) once (see [Icons](#icons)).
-
 ## Theme settings
 
 Go to **Appearance → hts → Settings** (`/admin/appearance/settings/hts`). The
@@ -221,11 +218,11 @@ wired into Drupal's core
 [Icon API](https://www.drupal.org/docs/develop/drupal-apis/icon-api), declared
 in `hts.icons.yml`.
 
-The SVG files are not committed. The build copies them from the
-`bootstrap-icons` npm package into `assets/icons/bootstrap-icons`, so run
-`npm install && npm run build` once before using icons. If the theme was
-enabled before the first build, run `drush cr` afterwards, since the Icon API
-caches the list of icons.
+The SVG files are committed in `assets/icons/bootstrap-icons`, so icons work
+on servers without Node.js. The build refreshes them from the
+`bootstrap-icons` npm package; after upgrading that package, run
+`npm run build` and commit the changes. Run `drush cr` if new icons don't
+appear, since the Icon API caches the list of icons.
 
 In Twig:
 
