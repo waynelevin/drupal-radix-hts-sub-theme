@@ -2,7 +2,7 @@
 
 /**
  * @file
- * Navbar colour setting.
+ * Navbar colour and menu alignment settings.
  */
 
 /**
@@ -26,6 +26,22 @@ function hts_navbar_color_options(): array {
 }
 
 /**
+ * Navbar menu alignment options.
+ *
+ * Each value is [label, Bootstrap margin class for the menu wrapper].
+ *
+ * @return array<string, array{0: string, 1: string}>
+ *   The options, keyed by setting value.
+ */
+function hts_navbar_alignment_options(): array {
+  return [
+    'left' => ['Left', 'me-auto'],
+    'center' => ['Centre', 'mx-auto'],
+    'right' => ['Right', 'ms-auto'],
+  ];
+}
+
+/**
  * Implements hook_preprocess_HOOK() for page templates.
  */
 function hts_preprocess_page(array &$variables): void {
@@ -36,6 +52,11 @@ function hts_preprocess_page(array &$variables): void {
   }
   $variables['hts_navbar_bg'] = $color;
   $variables['hts_navbar_theme'] = $options[$color][1];
+
+  $alignments = hts_navbar_alignment_options();
+  $alignment = theme_get_setting('navbar_alignment', 'hts') ?? 'left';
+  $variables['hts_navbar_menu_class'] = ($alignments[$alignment] ?? $alignments['left'])[1];
+
   // Re-render when the theme settings change.
   $variables['#cache']['tags'][] = 'config:hts.settings';
 }

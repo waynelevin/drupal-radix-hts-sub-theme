@@ -46,6 +46,14 @@ function hts_form_system_theme_settings_alter(array &$form, FormStateInterface $
     '#description' => t('Background of the top navbar, using the colours of the selected Bootswatch theme.'),
   ];
 
+  $form['hts_bootswatch']['navbar_alignment'] = [
+    '#type' => 'select',
+    '#title' => t('Navbar menu alignment'),
+    '#options' => array_map(fn(array $option) => t($option[0]), hts_navbar_alignment_options()),
+    '#default_value' => theme_get_setting('navbar_alignment', 'hts') ?? 'left',
+    '#description' => t('Position of the main menu (the "Navbar left" region) in the top navbar.'),
+  ];
+
   $form['hts_bootswatch']['font'] = [
     '#type' => 'select',
     '#title' => t('Font'),

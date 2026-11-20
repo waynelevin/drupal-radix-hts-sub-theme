@@ -1,9 +1,10 @@
 {#
 /**
  * @file
- * Site navbar. Overrides radix:page-navigation to add a background colour.
+ * Site navbar. Overrides radix:page-navigation to add a background colour
+ * and menu alignment.
  *
- * Uses hts_navbar_bg and hts_navbar_theme, set from the theme settings in
+ * Uses hts_navbar_bg, hts_navbar_theme and hts_navbar_menu_class, set from the theme settings in
  * hts_preprocess_page() (includes/navbar.theme).
  */
 #}
@@ -23,7 +24,7 @@
   {% endblock %}
   {% block left %}
     {% if page.navbar_left %}
-      <div class="me-auto">
+      <div class="{{ hts_navbar_menu_class|default('me-auto') }}">
         {{ page.navbar_left }}
       </div>
     {% endif %}
