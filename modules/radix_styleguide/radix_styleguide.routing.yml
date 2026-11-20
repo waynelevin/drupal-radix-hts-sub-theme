@@ -1,0 +1,7 @@
+radix_styleguide.page:
+  path: '/styleguide'
+  defaults:
+    _controller: '\Drupal\radix_styleguide\Controller\StyleguideController::page'
+    _title: 'Radix components'
+  requirements:
+    _permission: 'view radix styleguide'

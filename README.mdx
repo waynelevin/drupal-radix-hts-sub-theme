@@ -88,3 +88,21 @@ $build['icon'] = [
 Browse available icon names at https://icons.getbootstrap.com. To use a
 different icon set, swap the npm dependency and update the `sources`, `template`,
 and copy step accordingly.
+
+# Component styleguide
+
+The theme includes a small module, `modules/radix_styleguide`, that adds a
+page at `/styleguide` showing every visual Radix component (accordion, alert,
+badge, buttons, cards, carousel, modal, navbar, offcanvas, pagination, toasts
+and more) rendered with sample content in this theme. Use it to check how
+changes to the theme's Sass look across all components.
+
+Enable it with:
+
+```bash
+drush en radix_styleguide -y
+```
+
+Access requires the "View the Radix component styleguide" permission
+(administrators have it automatically). It is a development aid, so leave it
+disabled on production sites.
