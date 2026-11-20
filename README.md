@@ -12,8 +12,9 @@ settings page, with no Sass changes needed:
   right.
 - **Font**: choose from 20 Google Fonts, the device's system font, or the
   Bootswatch theme's own font.
-- **Component styleguide**: a `/styleguide` page showing every Radix
-  component, to check changes at a glance.
+- **Component and icon styleguides**: a `/styleguide` page showing every
+  Radix component, and `/styleguide/icons` showing every icon with search and
+  click-to-copy.
 - **Bootstrap Icons** through Drupal's core Icon API.
 
 | | |
@@ -188,6 +189,21 @@ Not shown:
 - **The disabled close button**. Radix 6.0.9's `close-button` template throws
   an error for `disabled: true`.
 
+### Icon styleguide
+
+A second page, **`/styleguide/icons`**, shows every icon available through
+Drupal's Icon API, grouped by icon pack: this theme's Bootstrap Icons plus any
+packs from other modules (eg core's Navigation module). Each icon is rendered
+through the Icon API exactly as it would appear on the site.
+
+- **Search**: type to filter icons by name. Several words narrow the results,
+  eg `arrow left`.
+- **Click to copy**: clicking an icon copies its Twig code, eg
+  `{{ icon('bootstrap_icons', 'house-fill') }}`.
+- **Pack links**: jump to a pack, with the number of icons in each.
+
+The two pages link to each other.
+
 Enable it with:
 
 ```bash
@@ -352,7 +368,7 @@ hts/
 │   ├── navbar.theme       Navbar colour and menu alignment
 │   └── font.theme         Font setting
 ├── modules/
-│   └── radix_styleguide/  The /styleguide page
+│   └── radix_styleguide/  The /styleguide and /styleguide/icons pages
 ├── src/
 │   ├── js/                JavaScript sources
 │   └── scss/              Sass sources (base/_variables.scss for Bootstrap variables)

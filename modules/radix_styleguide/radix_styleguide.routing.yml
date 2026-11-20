@@ -5,3 +5,11 @@ radix_styleguide.page:
     _title: 'Radix components'
   requirements:
     _permission: 'view radix styleguide'
+
+radix_styleguide.icons:
+  path: '/styleguide/icons'
+  defaults:
+    _controller: '\Drupal\radix_styleguide\Controller\IconsController::page'
+    _title: 'Icons'
+  requirements:
+    _permission: 'view radix styleguide'

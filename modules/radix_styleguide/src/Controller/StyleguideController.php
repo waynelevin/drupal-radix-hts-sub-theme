@@ -61,7 +61,7 @@ final class StyleguideController extends ControllerBase {
       '#cache' => ['max-age' => 0],
     ];
     $build['intro'] = [
-      '#markup' => '<p class="lead">' . $this->t('Every visual component from the Radix base theme, rendered with sample content in the active theme. Page-structure components (html, page, node, region, field, form elements, views) are used by Drupal itself and are not shown here.') . '</p>',
+      '#markup' => Markup::create('<p class="lead">' . $this->t('Every visual component from the Radix base theme, rendered with sample content in the active theme. Page-structure components (html, page, node, region, field, form elements, views) are used by Drupal itself and are not shown here.') . '</p><p><a class="btn btn-outline-primary btn-sm" href="' . Url::fromRoute('radix_styleguide.icons')->toString() . '">' . $this->t('Browse all icons →') . '</a></p>'),
     ];
 
     $toc = [];

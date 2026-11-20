@@ -1,0 +1,9 @@
+icons:
+  css:
+    component:
+      css/icons.css: {}
+  js:
+    js/icons.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
