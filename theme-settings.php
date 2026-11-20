@@ -8,6 +8,7 @@
 use Drupal\Core\Form\FormStateInterface;
 
 require_once __DIR__ . '/includes/bootswatch.theme';
+require_once __DIR__ . '/includes/navbar.theme';
 
 /**
  * Implements hook_form_FORM_ID_alter() for system_theme_settings.
@@ -35,6 +36,14 @@ function hts_form_system_theme_settings_alter(array &$form, FormStateInterface $
     $form['hts_bootswatch']['bootswatch']['#disabled'] = TRUE;
     $form['hts_bootswatch']['bootswatch']['#description'] = t('No Bootswatch builds were found. Run <code>npm run build</code> in the theme folder to create them.');
   }
+
+  $form['hts_bootswatch']['navbar_color'] = [
+    '#type' => 'select',
+    '#title' => t('Navbar colour'),
+    '#options' => array_map(fn(array $option) => t($option[0]), hts_navbar_color_options()),
+    '#default_value' => theme_get_setting('navbar_color', 'hts') ?? 'primary',
+    '#description' => t('Background of the top navbar, using the colours of the selected Bootswatch theme.'),
+  ];
 
   $form['#submit'][] = 'hts_bootswatch_settings_submit';
 }

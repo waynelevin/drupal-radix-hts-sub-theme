@@ -7,3 +7,6 @@ hts.settings:
     bootswatch:
       type: string
       label: 'Bootswatch theme (empty for default Bootstrap)'
+    navbar_color:
+      type: string
+      label: 'Navbar background colour (Bootstrap bg-* suffix, empty for none)'

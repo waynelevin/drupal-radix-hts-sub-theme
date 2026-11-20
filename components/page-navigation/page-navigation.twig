@@ -1,0 +1,38 @@
+{#
+/**
+ * @file
+ * Site navbar. Overrides radix:page-navigation to add a background colour.
+ *
+ * Uses hts_navbar_bg and hts_navbar_theme, set from the theme settings in
+ * hts_preprocess_page() (includes/navbar.theme).
+ */
+#}
+{%
+  embed 'radix:navbar' with {
+    navbar_theme: hts_navbar_theme|default('light'),
+    navbar_utility_classes: [
+      'justify-content-between',
+      hts_navbar_bg ? 'bg-' ~ hts_navbar_bg,
+    ]|filter(class => class),
+  }
+%}
+  {% block branding %}
+    {% if page.navbar_branding %}
+      {{ page.navbar_branding }}
+    {% endif %}
+  {% endblock %}
+  {% block left %}
+    {% if page.navbar_left %}
+      <div class="me-auto">
+        {{ page.navbar_left }}
+      </div>
+    {% endif %}
+  {% endblock %}
+  {% block right %}
+    {% if page.navbar_right %}
+      <div class="ms-auto">
+        {{ page.navbar_right }}
+      </div>
+    {% endif %}
+  {% endblock %}
+{% endembed %}

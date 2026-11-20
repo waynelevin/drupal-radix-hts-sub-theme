@@ -1,0 +1,41 @@
+<?php
+
+/**
+ * @file
+ * Navbar colour setting.
+ */
+
+/**
+ * Navbar colour options, keyed by Bootstrap background class suffix.
+ *
+ * Each value is [label, navbar text theme]. "dark" means light text, for use
+ * on dark backgrounds.
+ *
+ * @return array<string, array{0: string, 1: string}>
+ *   The options.
+ */
+function hts_navbar_color_options(): array {
+  return [
+    'primary' => ['Primary', 'dark'],
+    'secondary' => ['Secondary', 'dark'],
+    'dark' => ['Dark', 'dark'],
+    'body-tertiary' => ['Light grey', 'light'],
+    'light' => ['Light', 'light'],
+    '' => ['None (transparent)', 'light'],
+  ];
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for page templates.
+ */
+function hts_preprocess_page(array &$variables): void {
+  $options = hts_navbar_color_options();
+  $color = theme_get_setting('navbar_color', 'hts') ?? 'primary';
+  if (!isset($options[$color])) {
+    $color = 'primary';
+  }
+  $variables['hts_navbar_bg'] = $color;
+  $variables['hts_navbar_theme'] = $options[$color][1];
+  // Re-render when the theme settings change.
+  $variables['#cache']['tags'][] = 'config:hts.settings';
+}
