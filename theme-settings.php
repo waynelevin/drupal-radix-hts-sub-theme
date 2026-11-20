@@ -1,0 +1,47 @@
+<?php
+
+/**
+ * @file
+ * Theme settings form for the hts theme.
+ */
+
+use Drupal\Core\Form\FormStateInterface;
+
+require_once __DIR__ . '/includes/bootswatch.theme';
+
+/**
+ * Implements hook_form_FORM_ID_alter() for system_theme_settings.
+ */
+function hts_form_system_theme_settings_alter(array &$form, FormStateInterface $form_state): void {
+  $options = hts_bootswatch_options();
+
+  $form['hts_bootswatch'] = [
+    '#type' => 'details',
+    '#title' => t('Bootswatch theme'),
+    '#open' => TRUE,
+    '#weight' => -10,
+  ];
+  $form['hts_bootswatch']['bootswatch'] = [
+    '#type' => 'select',
+    '#title' => t('Colour and style theme'),
+    '#options' => ['' => t('None (default Bootstrap)')] + $options,
+    '#default_value' => (string) theme_get_setting('bootswatch', 'hts'),
+    '#description' => t('Restyle the site with one of the free themes from <a href=":url" target="_blank" rel="noopener">Bootswatch</a>. Preview them there, or on the <a href=":styleguide">component styleguide</a> after saving. Most Bootswatch themes also load their web font from Google Fonts.', [
+      ':url' => 'https://bootswatch.com/',
+      ':styleguide' => '/styleguide',
+    ]),
+  ];
+  if (!$options) {
+    $form['hts_bootswatch']['bootswatch']['#disabled'] = TRUE;
+    $form['hts_bootswatch']['bootswatch']['#description'] = t('No Bootswatch builds were found. Run <code>npm run build</code> in the theme folder to create them.');
+  }
+
+  $form['#submit'][] = 'hts_bootswatch_settings_submit';
+}
+
+/**
+ * Form submit handler: rebuilds library definitions so the change applies.
+ */
+function hts_bootswatch_settings_submit(array &$form, FormStateInterface $form_state): void {
+  \Drupal::service('library.discovery')->clear();
+}

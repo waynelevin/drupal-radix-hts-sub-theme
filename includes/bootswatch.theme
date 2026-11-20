@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Bootswatch theme support: swaps the main stylesheet for a Bootswatch build.
+ */
+
+/**
+ * Returns the Bootswatch variants that have been built, keyed by name.
+ *
+ * @return array<string, string>
+ *   Human-readable labels keyed by machine name, eg ['darkly' => 'Darkly'].
+ */
+function hts_bootswatch_options(): array {
+  $options = [];
+  foreach (glob(__DIR__ . '/../build/css/bootswatch/*.css') ?: [] as $file) {
+    $name = basename($file, '.css');
+    $options[$name] = ucfirst($name);
+  }
+  return $options;
+}
+
+/**
+ * Implements hook_library_info_alter().
+ *
+ * Replaces build/css/main.style.css in the theme's "style" library with the
+ * selected Bootswatch variant. Each variant is a complete stylesheet that
+ * already includes the theme's own styles.
+ */
+function hts_library_info_alter(array &$libraries, string $extension): void {
+  if ($extension !== 'hts' || !isset($libraries['style']['css']['theme']['build/css/main.style.css'])) {
+    return;
+  }
+
+  $name = (string) theme_get_setting('bootswatch', 'hts');
+  if ($name === '' || !preg_match('/^[a-z0-9_-]+$/', $name) || !isset(hts_bootswatch_options()[$name])) {
+    return;
+  }
+
+  $css = &$libraries['style']['css']['theme'];
+  $css = ["build/css/bootswatch/$name.css" => $css['build/css/main.style.css']] + $css;
+  unset($css['build/css/main.style.css']);
+}

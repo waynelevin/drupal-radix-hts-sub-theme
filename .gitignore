@@ -12,3 +12,6 @@ node_modules
 
 # Bootstrap Icons SVGs copied from node_modules by the build
 /assets/icons/bootstrap-icons
+
+# Generated Bootswatch entry files (see build.mjs)
+/src/scss/bootswatch/

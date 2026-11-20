@@ -3,3 +3,7 @@
 hts.settings:
   type: theme_settings
   label: 'hts settings'
+  mapping:
+    bootswatch:
+      type: string
+      label: 'Bootswatch theme (empty for default Bootstrap)'
