@@ -19,34 +19,63 @@ use Drupal\Core\Render\Markup;
 function hts_font_options(): array {
   $sans = ', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
   $serif = ', Georgia, Cambria, "Times New Roman", Times, serif';
-  $italic = 'ital,wght@0,400;0,700;1,400;1,700';
+  $static = [100, 200, 300, 400, 500, 600, 700, 800, 900];
 
+  // Every weight each family offers. A "min..max" range is for variable fonts;
+  // a list is for families that only ship static weights. The browser
+  // downloads only the weights the page actually uses.
   return [
     '' => ['Theme default', NULL, NULL],
     'system' => ['System UI (no web font)', NULL, 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif'],
     // Sans-serif.
-    'inter' => ['Inter', "Inter:$italic", '"Inter"' . $sans],
-    'roboto' => ['Roboto', "Roboto:$italic", '"Roboto"' . $sans],
-    'open-sans' => ['Open Sans', "Open+Sans:$italic", '"Open Sans"' . $sans],
-    'lato' => ['Lato', "Lato:$italic", '"Lato"' . $sans],
-    'montserrat' => ['Montserrat', "Montserrat:$italic", '"Montserrat"' . $sans],
-    'poppins' => ['Poppins', "Poppins:$italic", '"Poppins"' . $sans],
-    'source-sans-3' => ['Source Sans 3', "Source+Sans+3:$italic", '"Source Sans 3"' . $sans],
-    'nunito' => ['Nunito', "Nunito:$italic", '"Nunito"' . $sans],
-    'raleway' => ['Raleway', "Raleway:$italic", '"Raleway"' . $sans],
-    'work-sans' => ['Work Sans', "Work+Sans:$italic", '"Work Sans"' . $sans],
-    'dm-sans' => ['DM Sans', "DM+Sans:$italic", '"DM Sans"' . $sans],
-    'ibm-plex-sans' => ['IBM Plex Sans', "IBM+Plex+Sans:$italic", '"IBM Plex Sans"' . $sans],
-    'fira-sans' => ['Fira Sans', "Fira+Sans:$italic", '"Fira Sans"' . $sans],
-    'manrope' => ['Manrope', 'Manrope:wght@400;700', '"Manrope"' . $sans],
-    'outfit' => ['Outfit', 'Outfit:wght@400;700', '"Outfit"' . $sans],
+    'inter' => ['Inter', hts_font_spec('Inter', '100..900'), '"Inter"' . $sans],
+    'roboto' => ['Roboto', hts_font_spec('Roboto', '100..900'), '"Roboto"' . $sans],
+    'open-sans' => ['Open Sans', hts_font_spec('Open Sans', '300..800'), '"Open Sans"' . $sans],
+    'lato' => ['Lato', hts_font_spec('Lato', [100, 300, 400, 700, 900]), '"Lato"' . $sans],
+    'montserrat' => ['Montserrat', hts_font_spec('Montserrat', '100..900'), '"Montserrat"' . $sans],
+    'poppins' => ['Poppins', hts_font_spec('Poppins', $static), '"Poppins"' . $sans],
+    'source-sans-3' => ['Source Sans 3', hts_font_spec('Source Sans 3', '200..900'), '"Source Sans 3"' . $sans],
+    'nunito' => ['Nunito', hts_font_spec('Nunito', '200..1000'), '"Nunito"' . $sans],
+    'raleway' => ['Raleway', hts_font_spec('Raleway', '100..900'), '"Raleway"' . $sans],
+    'work-sans' => ['Work Sans', hts_font_spec('Work Sans', '100..900'), '"Work Sans"' . $sans],
+    'dm-sans' => ['DM Sans', hts_font_spec('DM Sans', '100..1000'), '"DM Sans"' . $sans],
+    'ibm-plex-sans' => ['IBM Plex Sans', hts_font_spec('IBM Plex Sans', '100..700'), '"IBM Plex Sans"' . $sans],
+    'fira-sans' => ['Fira Sans', hts_font_spec('Fira Sans', $static), '"Fira Sans"' . $sans],
+    'manrope' => ['Manrope', hts_font_spec('Manrope', '200..800', FALSE), '"Manrope"' . $sans],
+    'outfit' => ['Outfit', hts_font_spec('Outfit', '100..900', FALSE), '"Outfit"' . $sans],
     // Serif.
-    'merriweather' => ['Merriweather (serif)', "Merriweather:$italic", '"Merriweather"' . $serif],
-    'lora' => ['Lora (serif)', "Lora:$italic", '"Lora"' . $serif],
-    'playfair-display' => ['Playfair Display (serif)', "Playfair+Display:$italic", '"Playfair Display"' . $serif],
-    'pt-serif' => ['PT Serif (serif)', "PT+Serif:$italic", '"PT Serif"' . $serif],
-    'roboto-slab' => ['Roboto Slab (serif)', 'Roboto+Slab:wght@400;700', '"Roboto Slab"' . $serif],
+    'merriweather' => ['Merriweather (serif)', hts_font_spec('Merriweather', '300..900'), '"Merriweather"' . $serif],
+    'lora' => ['Lora (serif)', hts_font_spec('Lora', '400..700'), '"Lora"' . $serif],
+    'playfair-display' => ['Playfair Display (serif)', hts_font_spec('Playfair Display', '400..900'), '"Playfair Display"' . $serif],
+    'pt-serif' => ['PT Serif (serif)', hts_font_spec('PT Serif', [400, 700]), '"PT Serif"' . $serif],
+    'roboto-slab' => ['Roboto Slab (serif)', hts_font_spec('Roboto Slab', '100..900', FALSE), '"Roboto Slab"' . $serif],
   ];
+}
+
+/**
+ * Builds a Google Fonts css2 family spec.
+ *
+ * @param string $family
+ *   The family name, eg "Open Sans".
+ * @param string|int[] $weights
+ *   A "min..max" range for a variable font, or a list of static weights.
+ * @param bool $italic
+ *   Whether the family has italics.
+ *
+ * @return string
+ *   The spec, eg "Open+Sans:ital,wght@0,300..800;1,300..800".
+ */
+function hts_font_spec(string $family, string|array $weights, bool $italic = TRUE): string {
+  $weights = (array) $weights;
+  $family = str_replace(' ', '+', $family);
+  if (!$italic) {
+    return "$family:wght@" . implode(';', $weights);
+  }
+  $tuples = array_merge(
+    array_map(fn($w) => "0,$w", $weights),
+    array_map(fn($w) => "1,$w", $weights),
+  );
+  return "$family:ital,wght@" . implode(';', $tuples);
 }
 
 /**

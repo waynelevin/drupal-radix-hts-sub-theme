@@ -130,8 +130,13 @@ The font for body text, headings, buttons and the navbar:
   Manrope, Outfit.
 - **Serif**: Merriweather, Lora, Playfair Display, PT Serif, Roboto Slab.
 
-Web fonts load from Google Fonts in regular and bold, plus italics where the
-font has them. Preview them at [fonts.google.com](https://fonts.google.com/).
+Web fonts load from Google Fonts in every weight the font offers (eg 100–900),
+plus italics where the font has them, so `font-weight` values like 300 or 600
+render with the real font files instead of synthesised ones. The browser only
+downloads the weights a page actually uses. Each font's weights are listed in
+`hts_font_options()` in `includes/font.theme`: a `min..max` range for variable
+fonts, or a list for fonts with static weights. Preview the fonts at
+[fonts.google.com](https://fonts.google.com/).
 The font is applied by setting Bootstrap's `--bs-body-font-family`, so it
 also reaches components that use that variable.
 
