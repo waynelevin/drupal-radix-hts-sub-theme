@@ -43,7 +43,7 @@ settings page, with no Sass changes needed:
 
 ```bash
 composer config repositories.hts vcs https://github.com/waynelevin/drupal-radix-hts-sub-theme
-composer require drupal/hts:dev-main
+composer require waynelevin/hts:dev-main
 drush theme:enable hts
 drush config:set system.theme default hts -y
 ```
