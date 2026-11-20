@@ -83,9 +83,14 @@ function hts_page_attachments_alter(array &$attachments): void {
 
   // Bootstrap reads the body font from --bs-body-font-family; some Bootswatch
   // themes give headings and the navbar brand their own font, so set those too.
+  // Drupal prints this <style> before the theme stylesheets, so every selector
+  // is prefixed with "html" to outrank the Bootswatch rules (eg Zephyr's
+  // ":root { --bs-font-sans-serif: Inter }") regardless of order.
+  $elements = ['body', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', '.h1', '.h2', '.h3', '.h4', '.h5', '.h6', '.display-1', '.display-2', '.display-3', '.display-4', '.display-5', '.display-6', '.navbar', '.navbar-brand', '.btn'];
+  $selectors = implode(',', array_map(fn(string $selector) => "html $selector", $elements));
   $attachments['#attached']['html_head'][] = [[
     '#tag' => 'style',
-    '#value' => Markup::create(':root,[data-bs-theme]{--bs-body-font-family:' . $stack . ';--bs-font-sans-serif:' . $stack . ';}'
-      . 'body,h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6,.display-1,.display-2,.display-3,.display-4,.display-5,.display-6,.navbar,.navbar-brand,.btn{font-family:var(--bs-body-font-family);}'),
+    '#value' => Markup::create('html:root,html [data-bs-theme]{--bs-body-font-family:' . $stack . ';--bs-font-sans-serif:' . $stack . ';}'
+      . $selectors . '{font-family:var(--bs-body-font-family);}'),
   ], 'hts_font_css'];
 }
