@@ -1,0 +1,10 @@
+{
+    "name": "drupal/hts",
+    "description": "hts theme: a Radix 6 sub-theme based on Bootstrap 5.",
+    "type": "drupal-custom-theme",
+    "license": "GPL-2.0-or-later",
+    "require": {
+        "drupal/core": "^11",
+        "drupal/radix": "^6.0"
+    }
+}
