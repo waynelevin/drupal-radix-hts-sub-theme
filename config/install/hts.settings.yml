@@ -2,3 +2,5 @@ bootswatch: ''
 navbar_color: primary
 navbar_alignment: left
 font: ''
+table_striped: false
+table_row_padding: ''

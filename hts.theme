@@ -10,3 +10,17 @@ $includes_path = __DIR__ . '/includes/*.theme';
 foreach (glob($includes_path) as $file) {
   require_once __DIR__ . '/includes/' . basename($file);
 }
+
+/**
+ * Implements hook_page_attachments_alter().
+ *
+ * Settings that add CSS to the page each provide a helper, called from here
+ * because a theme can only implement this hook once.
+ */
+function hts_page_attachments_alter(array &$attachments): void {
+  // Re-render when the theme settings change.
+  $attachments['#cache']['tags'][] = 'config:hts.settings';
+
+  hts_font_page_attachments($attachments);
+  hts_table_page_attachments($attachments);
+}

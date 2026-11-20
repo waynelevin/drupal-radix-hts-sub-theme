@@ -478,7 +478,8 @@ final class StyleguideController extends ControllerBase {
         'caption' => 'List of users',
         'header' => array_map(fn($h) => $cell($h, 'th'), ['#', 'First', 'Last', 'Handle']),
         'rows' => $rows,
-        'striped' => TRUE,
+        // Follow the active theme's "Striped tables" setting.
+        'striped' => (bool) theme_get_setting('table_striped'),
       ]),
     ];
   }

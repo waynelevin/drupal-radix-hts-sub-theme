@@ -12,6 +12,7 @@ settings page, with no Sass changes needed:
   right.
 - **Font**: choose from 20 Google Fonts, the device's system font, or the
   Bootswatch theme's own font.
+- **Tables**: optionally shade every other row, and set the row padding.
 - **Component and icon styleguides**: a `/styleguide` page showing every
   Radix component, and `/styleguide/icons` showing every icon with search and
   click-to-copy.
@@ -65,7 +66,8 @@ committed in `build/`, so the theme works straight away without running npm.
 ## Theme settings
 
 Go to **Appearance → hts → Settings** (`/admin/appearance/settings/hts`). The
-**Bootswatch theme** section at the top of the page has four settings. Each
+**Bootswatch theme** section at the top of the page has four settings, and the
+**Tables** section below it has two. Each
 takes effect as soon as the form is saved.
 
 ### Bootswatch theme
@@ -140,6 +142,33 @@ fonts, or a list for fonts with static weights. Preview the fonts at
 The font is applied by setting Bootstrap's `--bs-body-font-family`, so it
 also reaches components that use that variable.
 
+### Tables
+
+Both table settings apply to Drupal's tables on pages that use this theme
+(table fields, forms and so on), Views tables, and the table on the
+[component styleguide](#component-styleguide). Admin pages use the admin
+theme, so they are not affected.
+
+**Striped tables**: when ticked, every other row is shaded, using Bootstrap's
+`table-striped` class and the colours of the selected Bootswatch theme. Tables
+whose rows turn striping off (`'no_striping' => TRUE`) stay unstriped. Off by
+default.
+
+**Row padding**: the space above and below the content of each row. Left and
+right padding are unchanged.
+
+| Option | Padding |
+|---|---|
+| **Theme default** *(default)* | The Bootswatch theme's own: 0.5rem for most, 0.75rem for Brite, 1rem for Zephyr |
+| **None** | 0 |
+| **Compact** | 0.25rem (4px) |
+| **Normal** | 0.5rem (8px), Bootstrap's default |
+| **Comfortable** | 0.75rem (12px) |
+| **Spacious** | 1rem (16px) |
+| **Extra spacious** | 1.5rem (24px) |
+
+Small tables (`table-sm`) keep their own compact padding.
+
 ### Settings reference
 
 The settings are stored in `hts.settings` with Drupal's other theme settings,
@@ -151,6 +180,8 @@ and can be exported with configuration management:
 | `navbar_color` | `primary` | `primary`, `secondary`, `dark`, `body-tertiary`, `light`, or empty for none |
 | `navbar_alignment` | `left` | `left`, `center`, `right` |
 | `font` | `''` | A font key from `includes/font.theme`, eg `poppins`, `system`, or empty for the theme default |
+| `table_striped` | `false` | `true` to stripe table rows |
+| `table_row_padding` | `''` | `none`, `compact`, `normal`, `comfortable`, `spacious`, `extra-spacious`, or empty for the theme default |
 
 > **Tip:** reload the settings page before saving if it has been open for a
 > while. Saving an out-of-date copy also re-saves Drupal's standard settings
@@ -368,7 +399,8 @@ hts/
 ├── includes/              Preprocess functions and settings logic
 │   ├── bootswatch.theme   Bootswatch stylesheet switching
 │   ├── navbar.theme       Navbar colour and menu alignment
-│   └── font.theme         Font setting
+│   ├── font.theme         Font setting
+│   └── table.theme        Striped tables and row padding settings
 ├── modules/
 │   └── radix_styleguide/  The /styleguide and /styleguide/icons pages
 ├── src/

@@ -16,3 +16,9 @@ hts.settings:
     font:
       type: string
       label: 'Font (empty for the Bootswatch theme default)'
+    table_striped:
+      type: boolean
+      label: 'Stripe table rows'
+    table_row_padding:
+      type: string
+      label: 'Table row top and bottom padding (empty for the Bootswatch theme default)'

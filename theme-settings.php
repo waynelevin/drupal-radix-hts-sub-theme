@@ -10,6 +10,7 @@ use Drupal\Core\Form\FormStateInterface;
 require_once __DIR__ . '/includes/bootswatch.theme';
 require_once __DIR__ . '/includes/navbar.theme';
 require_once __DIR__ . '/includes/font.theme';
+require_once __DIR__ . '/includes/table.theme';
 
 /**
  * Implements hook_form_FORM_ID_alter() for system_theme_settings.
@@ -62,6 +63,26 @@ function hts_form_system_theme_settings_alter(array &$form, FormStateInterface $
     '#description' => t('Used for body text and headings. "Theme default" keeps the font of the selected Bootswatch theme. Web fonts are loaded from Google Fonts; preview them at <a href=":url" target="_blank" rel="noopener">fonts.google.com</a>.', [
       ':url' => 'https://fonts.google.com/',
     ]),
+  ];
+
+  $form['hts_tables'] = [
+    '#type' => 'details',
+    '#title' => t('Tables'),
+    '#open' => TRUE,
+    '#weight' => -9,
+  ];
+  $form['hts_tables']['table_striped'] = [
+    '#type' => 'checkbox',
+    '#title' => t('Striped tables'),
+    '#default_value' => hts_table_striped(),
+    '#description' => t('Shade every other row of tables, including Views tables, using the colours of the selected Bootswatch theme.'),
+  ];
+  $form['hts_tables']['table_row_padding'] = [
+    '#type' => 'select',
+    '#title' => t('Row padding'),
+    '#options' => array_map(fn(array $option) => t($option[0]), hts_table_row_padding_options()),
+    '#default_value' => (string) theme_get_setting('table_row_padding', 'hts'),
+    '#description' => t('Space above and below the content of each table row. "Theme default" keeps the padding of the selected Bootswatch theme.'),
   ];
 
   $form['#submit'][] = 'hts_bootswatch_settings_submit';

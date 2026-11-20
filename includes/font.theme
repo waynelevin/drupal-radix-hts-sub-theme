@@ -79,12 +79,11 @@ function hts_font_spec(string $family, string|array $weights, bool $italic = TRU
 }
 
 /**
- * Implements hook_page_attachments_alter().
+ * Attaches the selected font's stylesheet and CSS to the page.
+ *
+ * Called from hts_page_attachments_alter().
  */
-function hts_page_attachments_alter(array &$attachments): void {
-  // Re-render when the theme settings change.
-  $attachments['#cache']['tags'][] = 'config:hts.settings';
-
+function hts_font_page_attachments(array &$attachments): void {
   $options = hts_font_options();
   $font = (string) theme_get_setting('font', 'hts');
   if ($font === '' || !isset($options[$font])) {

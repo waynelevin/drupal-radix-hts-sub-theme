@@ -1,0 +1,83 @@
+<?php
+
+/**
+ * @file
+ * Table settings: zebra striping and row padding.
+ */
+
+use Drupal\Core\Render\Markup;
+
+/**
+ * Whether tables should be striped.
+ *
+ * @return bool
+ *   TRUE when the "Striped tables" theme setting is on.
+ */
+function hts_table_striped(): bool {
+  return (bool) theme_get_setting('table_striped', 'hts');
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for table templates.
+ */
+function hts_preprocess_table(array &$variables): void {
+  // The Radix table component adds Bootstrap's "table-striped" class when
+  // "striped" is set. Respect tables that opt out of striping.
+  if (hts_table_striped() && empty($variables['no_striping'])) {
+    $variables['striped'] = TRUE;
+  }
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for views_view_table templates.
+ */
+function hts_preprocess_views_view_table(array &$variables): void {
+  if (hts_table_striped()) {
+    $variables['attributes']['class'][] = 'table-striped';
+  }
+}
+
+/**
+ * Table row padding options.
+ *
+ * Each value is [label, CSS length or NULL]. The empty key keeps the padding
+ * of the selected Bootswatch theme (0.5rem for most, 0.75rem for Brite and
+ * 1rem for Zephyr).
+ *
+ * @return array<string, array{0: string, 1: ?string}>
+ *   The options, keyed by setting value.
+ */
+function hts_table_row_padding_options(): array {
+  return [
+    '' => ['Theme default', NULL],
+    'none' => ['None (0)', '0'],
+    'compact' => ['Compact (0.25rem / 4px)', '.25rem'],
+    'normal' => ['Normal (0.5rem / 8px)', '.5rem'],
+    'comfortable' => ['Comfortable (0.75rem / 12px)', '.75rem'],
+    'spacious' => ['Spacious (1rem / 16px)', '1rem'],
+    'extra-spacious' => ['Extra spacious (1.5rem / 24px)', '1.5rem'],
+  ];
+}
+
+/**
+ * Attaches the table row padding CSS to the page.
+ *
+ * Called from hts_page_attachments_alter().
+ */
+function hts_table_page_attachments(array &$attachments): void {
+  $options = hts_table_row_padding_options();
+  $padding = (string) theme_get_setting('table_row_padding', 'hts');
+  if ($padding === '' || !isset($options[$padding])) {
+    return;
+  }
+  $length = $options[$padding][1];
+
+  // Bootstrap pads every cell with "padding" on .table > * > tr > td/th.
+  // Override only the top and bottom. The "html" prefix outranks the
+  // Bootstrap and Bootswatch rule regardless of stylesheet order. Small tables
+  // (.table-sm) keep their own compact padding.
+  $attachments['#attached']['html_head'][] = [[
+    '#tag' => 'style',
+    '#value' => Markup::create("html .table:not(.table-sm)>:not(caption)>*>*{padding-top:$length;padding-bottom:$length;}"),
+  ], 'hts_table_row_padding_css'];
+}
