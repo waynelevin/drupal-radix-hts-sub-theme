@@ -1,0 +1,91 @@
+<?php
+
+/**
+ * @file
+ * Font setting: loads a Google Font and applies it to body text and headings.
+ */
+
+use Drupal\Core\Render\Markup;
+
+/**
+ * Font options.
+ *
+ * Each option is [label, Google Fonts css2 family spec or NULL, CSS stack].
+ * The empty key keeps the font of the selected Bootswatch theme.
+ *
+ * @return array<string, array{0: string, 1: ?string, 2: ?string}>
+ *   The options, keyed by machine name.
+ */
+function hts_font_options(): array {
+  $sans = ', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+  $serif = ', Georgia, Cambria, "Times New Roman", Times, serif';
+  $italic = 'ital,wght@0,400;0,700;1,400;1,700';
+
+  return [
+    '' => ['Theme default', NULL, NULL],
+    'system' => ['System UI (no web font)', NULL, 'system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", Arial, sans-serif'],
+    // Sans-serif.
+    'inter' => ['Inter', "Inter:$italic", '"Inter"' . $sans],
+    'roboto' => ['Roboto', "Roboto:$italic", '"Roboto"' . $sans],
+    'open-sans' => ['Open Sans', "Open+Sans:$italic", '"Open Sans"' . $sans],
+    'lato' => ['Lato', "Lato:$italic", '"Lato"' . $sans],
+    'montserrat' => ['Montserrat', "Montserrat:$italic", '"Montserrat"' . $sans],
+    'poppins' => ['Poppins', "Poppins:$italic", '"Poppins"' . $sans],
+    'source-sans-3' => ['Source Sans 3', "Source+Sans+3:$italic", '"Source Sans 3"' . $sans],
+    'nunito' => ['Nunito', "Nunito:$italic", '"Nunito"' . $sans],
+    'raleway' => ['Raleway', "Raleway:$italic", '"Raleway"' . $sans],
+    'work-sans' => ['Work Sans', "Work+Sans:$italic", '"Work Sans"' . $sans],
+    'dm-sans' => ['DM Sans', "DM+Sans:$italic", '"DM Sans"' . $sans],
+    'ibm-plex-sans' => ['IBM Plex Sans', "IBM+Plex+Sans:$italic", '"IBM Plex Sans"' . $sans],
+    'fira-sans' => ['Fira Sans', "Fira+Sans:$italic", '"Fira Sans"' . $sans],
+    'manrope' => ['Manrope', 'Manrope:wght@400;700', '"Manrope"' . $sans],
+    'outfit' => ['Outfit', 'Outfit:wght@400;700', '"Outfit"' . $sans],
+    // Serif.
+    'merriweather' => ['Merriweather (serif)', "Merriweather:$italic", '"Merriweather"' . $serif],
+    'lora' => ['Lora (serif)', "Lora:$italic", '"Lora"' . $serif],
+    'playfair-display' => ['Playfair Display (serif)', "Playfair+Display:$italic", '"Playfair Display"' . $serif],
+    'pt-serif' => ['PT Serif (serif)', "PT+Serif:$italic", '"PT Serif"' . $serif],
+    'roboto-slab' => ['Roboto Slab (serif)', 'Roboto+Slab:wght@400;700', '"Roboto Slab"' . $serif],
+  ];
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function hts_page_attachments_alter(array &$attachments): void {
+  // Re-render when the theme settings change.
+  $attachments['#cache']['tags'][] = 'config:hts.settings';
+
+  $options = hts_font_options();
+  $font = (string) theme_get_setting('font', 'hts');
+  if ($font === '' || !isset($options[$font])) {
+    return;
+  }
+  [, $google, $stack] = $options[$font];
+
+  if ($google !== NULL) {
+    $attachments['#attached']['html_head'][] = [[
+      '#tag' => 'link',
+      '#attributes' => ['rel' => 'preconnect', 'href' => 'https://fonts.googleapis.com'],
+    ], 'hts_font_preconnect'];
+    $attachments['#attached']['html_head'][] = [[
+      '#tag' => 'link',
+      '#attributes' => ['rel' => 'preconnect', 'href' => 'https://fonts.gstatic.com', 'crossorigin' => 'anonymous'],
+    ], 'hts_font_preconnect_static'];
+    $attachments['#attached']['html_head'][] = [[
+      '#tag' => 'link',
+      '#attributes' => [
+        'rel' => 'stylesheet',
+        'href' => 'https://fonts.googleapis.com/css2?family=' . $google . '&display=swap',
+      ],
+    ], 'hts_font_stylesheet'];
+  }
+
+  // Bootstrap reads the body font from --bs-body-font-family; some Bootswatch
+  // themes give headings and the navbar brand their own font, so set those too.
+  $attachments['#attached']['html_head'][] = [[
+    '#tag' => 'style',
+    '#value' => Markup::create(':root,[data-bs-theme]{--bs-body-font-family:' . $stack . ';--bs-font-sans-serif:' . $stack . ';}'
+      . 'body,h1,h2,h3,h4,h5,h6,.h1,.h2,.h3,.h4,.h5,.h6,.display-1,.display-2,.display-3,.display-4,.display-5,.display-6,.navbar,.navbar-brand,.btn{font-family:var(--bs-body-font-family);}'),
+  ], 'hts_font_css'];
+}
